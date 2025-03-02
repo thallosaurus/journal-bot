@@ -13,7 +13,7 @@ createCommand({
     if (interaction.channelId) {
 
       try {
-        optoutUser(interaction.channelId, interaction.user);
+        optoutUser(interaction);
         await Bot.helpers.sendInteractionResponse(
           interaction.id,
           interaction.token,

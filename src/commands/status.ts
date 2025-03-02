@@ -17,7 +17,7 @@ createCommand({
         {
           type: InteractionResponseTypes.ChannelMessageWithSource,
           data: {
-            content: `Status: Opted ${userIsOptedIn(interaction.channelId, interaction.user.id) ? "**IN**" : "**OUT**"} of journaling for channel <#${interaction.channelId}>`,
+            content: `Status: Opted ${userIsOptedIn(interaction.guildId!, interaction.user.id) ? "**IN**" : "**OUT**"} of journaling for channel <#${interaction.channelId}>`,
           },
         },
       );

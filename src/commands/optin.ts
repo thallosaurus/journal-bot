@@ -8,9 +8,11 @@ createCommand({
   type: ApplicationCommandTypes.ChatInput,
   execute: async (Bot, interaction) => {
 
-    if (interaction.channelId) {
+    console.log(interaction);
+
+    if (interaction.guildId!) {
       try {
-        optinUser(interaction.channelId, interaction.user);
+        optinUser(interaction);
         await Bot.helpers.sendInteractionResponse(
           interaction.id,
           interaction.token,

@@ -10,4 +10,9 @@ CREATE TABLE IF NOT EXISTS messages (
     origin INTEGER NOT NULL,
     timestamp INTEGER,
     content TEXT
-  )
+  );
+
+CREATE TABLE IF NOT EXISTS attachments (
+    id INTEGER,
+    data BLOB
+)

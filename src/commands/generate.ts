@@ -27,8 +27,7 @@ createCommand({
     // get messages of this day
     let d = new Date(snowflakeToTimestamp(interaction.id));
     
-    const startDate = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0);
-    const endDate = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0);
+    const [startDate, endDate] = [new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0), new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0)];
     
     if (interaction.channelId) {
       const records = getMessageRecordsForAuthorIdAndChannelId(startDate.getTime(), endDate.getTime(), interaction.user.id, interaction.channelId)

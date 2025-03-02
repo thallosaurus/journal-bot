@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net=localhost,127.0.0.1 --watch main.ts",
+    "devbot": "deno run -A --watch-exclude=fileloader.ts --watch mod.ts",
+    "journal": "deno run -A bin/journal.ts 368116272552214529 1267911955432210545"
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "ollama": "npm:ollama@0.5.0",
+    "discord.js": "npm:discord.js"
+  }
+}

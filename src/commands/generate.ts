@@ -1,5 +1,6 @@
+import { ai } from "../../configs.ts";
 import { ApplicationCommandTypes, InteractionResponseTypes } from "../../deps.ts";
-import { generateJournalEntry } from "../../ollama/ollama.ts";
+
 import { getMessageRecordsForAuthorIdAndChannelId } from "../database/mod.ts";
 import { snowflakeToTimestamp } from "../utils/helpers.ts";
 import { createCommand } from "./mod.ts";
@@ -32,7 +33,8 @@ createCommand({
     if (interaction.channelId) {
       const records = getMessageRecordsForAuthorIdAndChannelId(startDate.getTime(), endDate.getTime(), interaction.user.id, interaction.channelId)
       
-      const newEntry = await generateJournalEntry(records);
+      //const newEntry = await generateJournalEntry(records);
+      const newEntry = await ai.query(records);
       
       //console.log(newEntry);
       
@@ -42,7 +44,7 @@ createCommand({
         {
           type: InteractionResponseTypes.ChannelMessageWithSource,
           data: {
-            content: newEntry.message.content,
+            content: newEntry,
           },
         },
       );

@@ -3,13 +3,12 @@ import { snowflakeToTimestamp } from "../utils/helpers.ts";
 import { createCommand } from "./mod.ts";
 
 createCommand({
-  name: "image_recognition",
+  name: "recog",
   description: "Queries the AI for image recognition!",
-  type: ApplicationCommandTypes.ChatInput,
+  type: ApplicationCommandTypes.Message,
   execute: async (Bot, interaction) => {
 
     console.log(interaction);
-
     const ping = Date.now() - snowflakeToTimestamp(interaction.id);
     await Bot.helpers.sendInteractionResponse(
       interaction.id,

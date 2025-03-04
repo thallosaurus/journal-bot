@@ -13,8 +13,9 @@ export abstract class BotBackend {
     abstract query_image(request: ImageRequest): Promise<string>;
 
     readonly system_prompt = "Your job is it to create Wiki-like entries that read like blog-entries. The main topic is about the life of those which write the messages. Most of the messages are from my personal discord servers and may contain more than one actors. Write as if you were a human and dont make it too, the entries represent a conversation that contains information but dont tell this the reader. The format of the messages is as follows: [$timestamp] $username: $message_content."
+    readonly image_prompt = "What is in this image?"
 
-    static make() {
+    static async make() {
         const make_backend = () => {
             switch (Deno.env.get("BOT_BACKEND")) {
                 case "gemini":
@@ -26,7 +27,7 @@ export abstract class BotBackend {
             };
         }
         const backend = make_backend();
-        backend.init();
+        await backend.init();
         return backend;
     }
 }
@@ -34,7 +35,7 @@ export abstract class BotBackend {
 class GeminiBackend extends BotBackend {
     override query_image(request: ImageRequest): Promise<string> {
         const text_part = {
-            text: "What is in this image?"
+            text: this.image_prompt
         };
 
         const image_part = {
@@ -53,8 +54,11 @@ class GeminiBackend extends BotBackend {
     }
     private model!: GenerativeModel;
     override init() {
-        const genAI = new GoogleGenerativeAI(Deno.env.get("GEMINI_API_KEY") ?? "");
-        this.model = genAI.getGenerativeModel({ model: "gemini-2.0-flash", systemInstruction: this.system_prompt });
+        return new Promise((res) => {
+            const genAI = new GoogleGenerativeAI(Deno.env.get("GEMINI_API_KEY") ?? "");
+            this.model = genAI.getGenerativeModel({ model: Deno.env.get("GEMINI_MODEL") ?? "gemini-2.0-flash", systemInstruction: this.system_prompt });
+            res(null);
+        })
     }
     override query(entries: string[]): Promise<string> {
         const prompt = createPrompt(entries);
@@ -67,24 +71,24 @@ class GeminiBackend extends BotBackend {
 class OllamaBackend extends BotBackend {
     override query_image(request: ImageRequest): Promise<string> {
 
-          const message: Message = { role: 'user', images: [request.data], content: "What do you see in the attachment?" };
-          return ollama.chat({
+        const message: Message = { role: 'user', images: [request.data], content: "What do you see in the attachment?" };
+        return ollama.chat({
             model: this.targetVisionModel,
             messages: [message],
             stream: false,
-          }).then(e => {
+        }).then(e => {
             return e.message.content;
-          })
+        })
     }
-    readonly targetModel = "llama2-uncensored:latest";
-    readonly targetVisionModel = "llava:latest";
+    readonly targetModel = Deno.env.get("OLLAMA_MODEL") ?? "llama2-uncensored:latest";
+    readonly targetVisionModel = Deno.env.get("OLLAMA_VISION_MODEL") ?? "llava:latest";
 
     override init() {
-        //const { models } = await ollama.list();
-
         ollama.list().then(({ models }) => {
-            this.checkAndPullModel(models, this.targetModel);
-            this.checkAndPullModel(models, this.targetVisionModel);
+            return Promise.allSettled([
+                this.checkAndPullModel(models, this.targetModel),
+                this.checkAndPullModel(models, this.targetVisionModel)
+            ]);
         });
     }
 
@@ -94,7 +98,12 @@ class OllamaBackend extends BotBackend {
             console.log(`Model not found. Pulling ${modelName}...`);
             //const res = await ollama.pull({ model: targetModel, stream: true });
 
-            return ollama.pull({ model: modelName })
+            return ollama.pull({ model: modelName }).then(() => {
+                console.log(`Finished pull of ${modelName}`)
+            })
+        } else {
+            console.log(`${modelName} already downloaded`)
+            return;
         }
     }
 

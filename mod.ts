@@ -6,6 +6,7 @@ import { Bot } from "./bot.ts";
 import { fileLoader, importDirectory } from "./src/utils/loader.ts";
 import { updateApplicationCommands } from "./src/utils/updateCommands.ts";
 import { startBot } from "./deps.ts";
+import { BotBackend } from "./ollama/BotBackend.ts";
 
 log.info("Starting bot...");
 
@@ -26,5 +27,6 @@ async function startDiscordBot() {
   // STARTS THE CONNECTION TO DISCORD
   await startBot(Bot);
 }
+
 
 await startDiscordBot()

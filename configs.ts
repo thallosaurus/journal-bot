@@ -1,4 +1,5 @@
 import { dotEnvConfig } from "./deps.ts";
+import { BotBackend } from "./ollama/BotBackend.ts";
 
 // Get the .env file that the user should have created, and get the token
 const env = dotEnvConfig({ export: true });
@@ -17,3 +18,5 @@ export const configs = {
   /** The server id where you develop your bot and want dev commands created. */
   devGuildId: BigInt(env.DEV_GUILD_ID!),
 };
+
+export const ai = await BotBackend.make();

@@ -20,6 +20,7 @@ const bot = createBot({
   events: {},
 });
 
+
 // ENABLE ALL THE PLUGINS THAT WILL HELP MAKE IT EASIER TO CODE YOUR BOT
 enableHelpersPlugin(bot);
 enableCachePlugin(bot);
@@ -34,3 +35,4 @@ export interface BotClient extends BotWithCache<BotWithHelpersPlugin> {
 export const Bot = bot as BotClient;
 // PREPARE COMMANDS HOLDER
 Bot.commands = new Collection();
+

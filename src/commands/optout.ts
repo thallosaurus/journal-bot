@@ -11,7 +11,6 @@ createCommand({
     // check if user is already opted in
 
     if (interaction.channelId) {
-
       try {
         optoutUser(interaction);
         await Bot.helpers.sendInteractionResponse(

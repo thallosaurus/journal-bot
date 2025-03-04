@@ -10,7 +10,7 @@ createCommand({
 
     console.log(interaction);
 
-    if (interaction.guildId!) {
+    if (interaction.channelId!) {
       try {
         optinUser(interaction);
         await Bot.helpers.sendInteractionResponse(

@@ -4,7 +4,7 @@ import { createCommand } from "./mod.ts";
 
 createCommand({
   name: "image_recognition",
-  description: "Queries LLava for image recognition!",
+  description: "Queries the AI for image recognition!",
   type: ApplicationCommandTypes.ChatInput,
   execute: async (Bot, interaction) => {
 

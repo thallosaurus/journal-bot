@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY UNIQUE,
+    id INTEGER NOT NULL,
     username TEXT NOT NULL,
-    origin INTEGER NOT NULL
+    channelId INTEGER NOT NULL
   );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE TABLE IF NOT EXISTS attachments (
     id INTEGER,
-    data BLOB
+    data BLOB,
+    mime TEXT
 )

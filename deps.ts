@@ -9,3 +9,5 @@ export { config as dotEnvConfig } from "https://deno.land/x/dotenv@v3.1.0/mod.ts
 export * from "https://deno.land/x/kwik@v1.2.1/mod.ts";
 
 export * from "https://deno.land/x/sqlite/mod.ts";
+
+export * from "npm:@google/generative-ai";

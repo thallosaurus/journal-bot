@@ -11,6 +11,7 @@ export abstract class BotBackend {
     abstract init(): void;
     abstract query(entries: [string]): Promise<string>;
     abstract query_image(request: ImageRequest): Promise<string>;
+    abstract chat(prompt: string): Promise<string>;
 
     readonly system_prompt = "Your job is it to create Wiki-like entries that read like blog-entries. The main topic is about the life of those which write the messages. Most of the messages are from my personal discord servers and may contain more than one actors. Write as if you were a human and dont make it too, the entries represent a conversation that contains information but dont tell this the reader. The format of the messages is as follows: [$timestamp] $username: $message_content."
     readonly image_prompt = "What is in this image?"
@@ -33,6 +34,11 @@ export abstract class BotBackend {
 }
 
 class GeminiBackend extends BotBackend {
+    override chat(prompt: string): Promise<string> {
+        return this.model.generateContent(prompt).then((result: any) => {
+            return result.response.text();
+        });
+    }
     override query_image(request: ImageRequest): Promise<string> {
         const text_part = {
             text: this.image_prompt
@@ -69,6 +75,17 @@ class GeminiBackend extends BotBackend {
 }
 
 class OllamaBackend extends BotBackend {
+    override chat(prompt: string): Promise<string> {
+        const message: Message = { role: 'user', content: prompt };
+
+        return ollama.chat({
+            model: this.targetModel,
+            messages: [message],
+            stream: false,
+        }).then(result => {
+            return result.message.content;
+        });
+    }
     override query_image(request: ImageRequest): Promise<string> {
 
         const message: Message = { role: 'user', images: [request.data], content: "What do you see in the attachment?" };
@@ -78,7 +95,7 @@ class OllamaBackend extends BotBackend {
             stream: false,
         }).then(e => {
             return e.message.content;
-        })
+        });
     }
     readonly targetModel = Deno.env.get("OLLAMA_MODEL") ?? "llama2-uncensored:latest";
     readonly targetVisionModel = Deno.env.get("OLLAMA_VISION_MODEL") ?? "llava:latest";

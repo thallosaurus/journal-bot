@@ -2,7 +2,7 @@ import { Bot } from "../../bot.ts";
 
 import log from "../utils/logger.ts";
 import { snowflakeToTimestamp } from "../utils/helpers.ts";
-import { db, userIsOptedIn } from "../database/messages.ts";
+import { userIsOptedIn } from "../database/mod.ts";
 import { addAttachment, insertMessage } from "../database/mod.ts";
 
 Bot.events.messageCreate = (_, payload) => {

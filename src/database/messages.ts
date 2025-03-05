@@ -55,14 +55,14 @@ export function getMonitoredChannelsForUser(userid: bigint) {
 }
 
 export function getMessageRecordsForAuthorIdAndChannelId(start: number, end: number, author: bigint, channelId: bigint) {
-  const msgs = db.query("SELECT username || ': ' || content FROM messages JOIN users ON messages.author = users.id WHERE timestamp > ? AND timestamp < ? AND author = ? AND messages.origin = ? ORDER BY timestamp ASC", [start, end, author, channelId]);
+  const msgs = db.query("SELECT username || ': ' || content FROM messages JOIN users ON messages.author = users.id AND users.channelId = ? WHERE timestamp > ? AND timestamp < ? AND author = ? AND messages.origin = ? ORDER BY timestamp ASC", [channelId, start, end, author, channelId]);
   console.log(msgs);
   return msgs.flat() as [string];
 }
 
 export function getMessageRecordsForChannelId(start: number, end: number, channelId: bigint) {
-  const msgs = db.query("SELECT username || ': ' || content FROM messages JOIN users ON messages.author = users.id WHERE timestamp > ? AND timestamp < ? AND messages.origin = ? ORDER BY timestamp ASC", [start, end, channelId]);
-  console.log(msgs);
+  const msgs = db.query("SELECT username || ': ' || content FROM messages JOIN users ON messages.author = users.id AND users.channelId = ? WHERE timestamp > ? AND timestamp < ? AND messages.origin = ? ORDER BY timestamp ASC", [channelId, start, end, channelId]);
+  console.log(msgs.flat());
   return msgs.flat() as [string];
 }
 
